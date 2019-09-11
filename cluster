@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e 
+
+#A上执行
+docker run  -d  --restart=always --net etcdnet --ip 192.167.0.168 --name etcd0 quay.io/coreos/etcd /usr/local/bin/etcd --name autumn-client0 -advertise-client-urls http://192.167.0.168:2379 -listen-client-urls http://0.0.0.0:2379 -initial-advertise-peer-urls http://192.167.0.168:2380 -listen-peer-urls http://0.0.0.0:2380 -initial-cluster-token etcd-cluster -initial-cluster autumn-client0=http://192.167.0.168:2380,autumn-client1=http://192.167.0.170:2380,autumn-client2=http://192.167.0.172:2380 -initial-cluster-state new
+
+#B上执行
+docker run  -d  --restart=always --net etcdnet --ip 192.167.0.170 --name etcd1 quay.io/coreos/etcd /usr/local/bin/etcd --name autumn-client1 -advertise-client-urls http://192.167.0.170:2379 -listen-client-urls http://0.0.0.0:2379 -initial-advertise-peer-urls http://192.167.0.170:2380 -listen-peer-urls http://0.0.0.0:2380 -initial-cluster-token etcd-cluster -initial-cluster autumn-client0=http://192.167.0.168:2380,autumn-client1=http://192.167.0.170:2380,autumn-client2=http://192.167.0.172:2380 -initial-cluster-state new
+
+#C上执行
+docker run  -d  --restart=always --net etcdnet --ip 192.167.0.172 --name etcd2 quay.io/coreos/etcd /usr/local/bin/etcd --name autumn-client2 -advertise-client-urls http://192.167.0.172:2379 -listen-client-urls http://0.0.0.0:2379 -initial-advertise-peer-urls http://192.167.0.172:2380 -listen-peer-urls http://0.0.0.0:2380 -initial-cluster-token etcd-cluster -initial-cluster autumn-client0=http://192.167.0.168:2380,autumn-client1=http://192.167.0.170:2380,autumn-client2=http://192.167.0.172:2380 -initial-cluster-state new
